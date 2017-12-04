@@ -34,8 +34,8 @@ const GeneralDetail = ({headers, columns = []/*function or keypath */, entity}) 
         columnContent = '?';
       }
       return [...acc,
-        <dt className="col-sm-2">{title}</dt>,
-        <dd className="col-sm-10 col-xs-12">{columnContent === undefined || columnContent === null ?
+        <dt className="col-sm-2" key={title}>{title}</dt>,
+        <dd key={title + '-content'} className="col-sm-10 col-xs-12">{columnContent === undefined || columnContent === null ?
           <span className='text-muted'>NULL</span> : columnContent}</dd>
       ];
     }, [])}
