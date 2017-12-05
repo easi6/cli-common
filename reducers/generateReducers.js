@@ -50,7 +50,7 @@ const generateReducers = ({key, fetchListActions, fetchDetailActions}) => {
       }),
     getById: state => id => getEntity(state.byId, id),
     getVisible(state) {
-      const ids = state.ids;
+      const ids = state.ids; // eslint-disable-line no-shadow
       return ids.map(id => getEntity(state.byId, id));
     },
   };

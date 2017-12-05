@@ -117,7 +117,7 @@ export default function tokenAPIMiddleware(config = {}) {
       }
 
       if (action.payload && schema) {
-        action.payload = normalize(action.payload, schema);
+        action.payload = normalize(action.payload, schema); // eslint-disable-line no-param-reassign
       }
 
       return next(action);
