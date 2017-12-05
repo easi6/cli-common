@@ -2,14 +2,18 @@ import React from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 
-const _defaultTimestampColFunc = (row) =>
-  <div>
-    <i className="fa fa-plus-square-o"/> {moment(row.created_at).format('YYYY-MM-DD HH:mm Z')}
-    <br/>
-    <i className="fa fa-pencil-square-o"/> {moment(row.updated_at).format('YYYY-MM-DD HH:mm Z')}
-  </div>;
+const _defaultTimestampColFunc = row =>
+  (<div>
+    <i className="fa fa-plus-square-o" /> {moment(row.created_at).format('YYYY-MM-DD HH:mm Z')}
+    <br />
+    <i className="fa fa-pencil-square-o" /> {moment(row.updated_at).format('YYYY-MM-DD HH:mm Z')}
+  </div>);
 
-const GeneralDetail = ({headers, columns = []/*function or keypath */, entity}) => (
+const GeneralDetail = ({headers, columns = []/* function or keypath */, entity}: {
+  headers: Array,
+  columns: Array|Object,
+  entity: Object,
+}) => (
   <dl className="row">
     {headers.reduce((acc, title, i) => {
       let column;
@@ -34,9 +38,9 @@ const GeneralDetail = ({headers, columns = []/*function or keypath */, entity}) 
         columnContent = '?';
       }
       return [...acc,
-        <dt className="col-sm-2" key={'key-'+title}>{title}</dt>,
-        <dd key={'content-'+title} className="col-sm-10 col-xs-12">{columnContent === undefined || columnContent === null ?
-          <span className='text-muted'>NULL</span> : columnContent}</dd>
+        <dt className="col-sm-2" key={`key-${title}`}>{title}</dt>,
+        <dd key={`content-${title}`} className="col-sm-10 col-xs-12">{columnContent === undefined || columnContent === null ?
+          <span className="text-muted">NULL</span> : columnContent}</dd>,
       ];
     }, [])}
   </dl>

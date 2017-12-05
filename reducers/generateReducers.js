@@ -24,14 +24,14 @@ const generateReducers = ({key, fetchListActions, fetchDetailActions}) => {
     return state;
   };
 
-  const page = (state={total: 1, current: 1}, action) => {
+  const page = (state = {total: 1, current: 1}, action) => {
     if (action.payload && action.type === listSuccess) {
       return action.payload.result.page;
     }
     return state;
   };
 
-  const isFetching = (state=true, action) => {
+  const isFetching = (state = true, action) => {
     if ([listRequest, detailRequest].includes(action.type)) {
       return true;
     } else if ([listSuccess, listFailure, detailSuccess, detailFailure].includes(action.type)) {
@@ -48,11 +48,11 @@ const generateReducers = ({key, fetchListActions, fetchDetailActions}) => {
         page,
         isFetching,
       }),
-    getById: (state) => (id) => getEntity(state.byId, id),
+    getById: state => id => getEntity(state.byId, id),
     getVisible(state) {
       const ids = state.ids;
       return ids.map(id => getEntity(state.byId, id));
-    }
+    },
   };
   return object;
 };

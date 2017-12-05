@@ -1,17 +1,17 @@
 import {apiMiddleware, isRSAA, RSAA, CALL_API} from 'redux-api-middleware';
 import {normalize} from 'normalizr';
 
-export const CLEAR_REFRESH_TOKEN_PROMISE = "CLEAR_REFRESH_TOKEN_PROMISE";
-export const SAVE_REFRESH_TOKEN_PROMISE = "SAVE_REFRESH_TOKEN_PROMISE";
-export const SET_ACCESS_TOKEN = "SET_ACCESS_TOKEN";
+export const CLEAR_REFRESH_TOKEN_PROMISE = 'CLEAR_REFRESH_TOKEN_PROMISE';
+export const SAVE_REFRESH_TOKEN_PROMISE = 'SAVE_REFRESH_TOKEN_PROMISE';
+export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN';
 
-export const TOKEN_REFRESH_REQUEST = "TOKEN_REFRESH_REQUEST";
-export const TOKEN_REFRESH_SUCCESS = "TOKEN_REFRESH_SUCCESS";
-export const TOKEN_REFRESH_FAILURE = "TOKEN_REFRESH_FAILURE";
+export const TOKEN_REFRESH_REQUEST = 'TOKEN_REFRESH_REQUEST';
+export const TOKEN_REFRESH_SUCCESS = 'TOKEN_REFRESH_SUCCESS';
+export const TOKEN_REFRESH_FAILURE = 'TOKEN_REFRESH_FAILURE';
 
 const defaultConfig = {
   refreshReducerKey: 'tokenRefresh',
-  saveRefreshTokenPromise: (promise) => ({
+  saveRefreshTokenPromise: promise => ({
     type: SAVE_REFRESH_TOKEN_PROMISE,
     promise,
   }),
@@ -21,24 +21,22 @@ const defaultConfig = {
 }; // TODO implement
 
 const requestNewAccessToken = ({
-                                 store, next,
-                                 getRefreshToken, refreshTokenAction,
-                                 clearRefreshTokenPromise,
-                                 saveRefreshToken, saveAccessToken,
-                               }) => {
-  return store.dispatch(refreshTokenAction(getRefreshToken())).then((response) => {
-    next(clearRefreshTokenPromise());
+  store, next,
+  getRefreshToken, refreshTokenAction,
+  clearRefreshTokenPromise,
+  saveRefreshToken, saveAccessToken,
+}) => store.dispatch(refreshTokenAction(getRefreshToken())).then((response) => {
+  next(clearRefreshTokenPromise());
 
-    if (!response.error) {
-      saveRefreshToken(response.payload);
-      saveAccessToken(response.payload);
+  if (!response.error) {
+    saveRefreshToken(response.payload);
+    saveAccessToken(response.payload);
 
-      return {error: false};
-    }
+    return {error: false};
+  }
 
-    return {error: true};
-  });
-};
+  return {error: true};
+});
 
 export {CALL_API, RSAA};
 export default function tokenAPIMiddleware(config = {}) {
@@ -57,8 +55,7 @@ export default function tokenAPIMiddleware(config = {}) {
     refreshFailure,
   } = {...defaultConfig, ...config};
 
-  const middleware = store => next => originalAction => {
-
+  const middleware = store => next => (originalAction) => {
     // before injection
     // inject access token for bearer auth
     let copiedAction = originalAction;
@@ -96,33 +93,34 @@ export default function tokenAPIMiddleware(config = {}) {
 
           if (!refreshPromise) {
             refreshPromise = requestNewAccessToken({
-              store, next,
-              getRefreshToken, refreshTokenAction,
+              store,
+              next,
+              getRefreshToken,
+              refreshTokenAction,
               clearRefreshTokenPromise,
-              saveRefreshToken, saveAccessToken,
+              saveRefreshToken,
+              saveAccessToken,
             });
             next(saveRefreshTokenPromise(refreshPromise));
           }
 
-          return refreshPromise.then(response => {
+          return refreshPromise.then((response) => {
             if (!response.error) {
               return store.dispatch(originalAction);
             }
 
             // even the refresh token failed
             return store.dispatch(refreshFailure()).then(() => ({error: true}));
-          })
-        } else {
-          return next(action);
+          });
         }
-      } else {
-
-        if (action.payload && schema) {
-          action.payload = normalize(action.payload, schema);
-        }
-
         return next(action);
       }
+
+      if (action.payload && schema) {
+        action.payload = normalize(action.payload, schema);
+      }
+
+      return next(action);
     };
 
     const apiNext = apiMiddleware(store)(nextWrapper);
@@ -130,4 +128,4 @@ export default function tokenAPIMiddleware(config = {}) {
   };
 
   return middleware;
-};
+}
