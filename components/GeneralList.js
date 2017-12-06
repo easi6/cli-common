@@ -14,14 +14,14 @@ const _defaultTimestampColFunc = row =>
   </div>);
 
 
-const GeneralList = ({headers, columns = [] /* function or keypath */, rows, prefix, optionColumn = _defaultOptionColFunc}: {
+const GeneralList = ({headers, columns = [] /* function or keypath */, rows, prefix, optionColumn = _defaultOptionColFunc, ...rest}: {
   headers: Array,
   columns: Array|Object,
   rows: Array,
   prefix: string,
   optionColumn: boolean|Function,
 }) => (
-  <Table responsive hover>
+  <Table responsive hover {...rest}>
     <thead>
       <tr>
         {headers.map(title => <th key={title}>{title}</th>)}

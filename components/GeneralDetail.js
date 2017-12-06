@@ -35,7 +35,7 @@ const GeneralDetail = ({headers, columns = []/* function or keypath */, entity}:
       } else if (typeof column === 'function') {
         columnContent = column(entity);
       } else {
-        columnContent = '?';
+        columnContent = column;
       }
       return [...acc,
         <dt className="col-sm-2" key={`key-${title}`}>{title}</dt>,
