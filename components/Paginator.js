@@ -79,7 +79,8 @@ const Paginator = ({search, total, current, history}: {
       <PaginationItem disabled={current >= total}>
         <PaginationLink
           next
-          href=""git 
+          href=""
+          onClick={(e) => {
             e.preventDefault();
             history.push({
               search: qs.stringify({
