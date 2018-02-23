@@ -37,10 +37,14 @@ const GeneralDetail = ({headers, columns = []/* function or keypath */, entity}:
       } else {
         columnContent = column;
       }
+      if (typeof columnContent === 'boolean') {
+        columnContent = columnContent ? 'true' : 'false';
+      }
       return [...acc,
         <dt className="col-sm-2" key={`key-${title}`}>{title}</dt>,
         <dd key={`content-${title}`} className="col-sm-10 col-xs-12">{columnContent === undefined || columnContent === null ?
-          <span className="text-muted">NULL</span> : columnContent}</dd>,
+          <span className="text-muted">NULL</span> : (columnContent === '' ?
+            <span className="text-muted">Empty</span> : columnContent)}</dd>,
       ];
     }, [])}
   </dl>
