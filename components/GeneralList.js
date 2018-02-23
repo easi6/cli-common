@@ -13,18 +13,39 @@ const _defaultTimestampColFunc = row =>
     <i className="fa fa-pencil-square-o" /> {moment(row.updated_at).format('YYYY-MM-DD HH:mm Z')}
   </div>);
 
+const _defaultSortableHeader = (sortingElements, header) => {
+  let className = 'fa fa-sort';
+  if (sortingElements.sort_key === header.sort_key) {
+    className = `fa fa-caret-${sortingElements.sort_order === 'desc' ? 'down' : 'up'}`;
+  }
+  return (
+    <th key={header.title} style={{cursor: 'pointer'}} onClick={() => sortingElements.sortByKey(header.sort_key)}>
+      {header.title} <i className={className} />
+    </th>
+  );
+};
 
-const GeneralList = ({headers, columns = [] /* function or keypath */, rows, prefix, optionColumn = _defaultOptionColFunc, ...rest}: {
+
+const GeneralList = ({headers, columns = [] /* function or keypath */, rows, prefix, sortingElements, optionHeader = _defaultSortableHeader, optionColumn = _defaultOptionColFunc, ...rest}: {
   headers: Array,
   columns: Array|Object,
   rows: Array,
   prefix: string,
   optionColumn: boolean|Function,
+  sortingElements: Object,
+  optionHeader: Function,
 }) => (
   <Table responsive hover {...rest}>
     <thead>
       <tr>
-        {headers.map(title => <th key={title}>{title}</th>)}
+        {headers.map((header) => {
+          if (_.isObject(header)) {
+            return optionHeader(sortingElements, header);
+          }
+          return (
+            <th key={header}>{header}</th>
+          );
+        })}
         {optionColumn && <th>&nbsp;</th>}
       </tr>
     </thead>
@@ -37,14 +58,14 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, rows, pre
             if (Array.isArray(columns)) {
               column = columns[i];
             } else {
-              column = columns[keypath];
+              column = _.isObject(keypath) ? columns[keypath.title] : columns[keypath];
             }
             let columnContent;
             if (!column) {
               if (keypath === 'timestamps') {
                 columnContent = _defaultTimestampColFunc(row);
               } else {
-                columnContent = _.get(row, keypath);
+                columnContent = _.isObject(keypath) ? _.get(row, keypath.title) : _.get(row, keypath);
               }
             } else if (typeof column === 'string') {
               columnContent = _.get(row, column);
