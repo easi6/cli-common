@@ -51,7 +51,7 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, rows, pre
     </thead>
 
     <tbody>
-      {rows.map(row =>
+      {_.map(rows, (row, rowIndex) =>
         (<tr key={row.id}>
           {headers.map((keypath, i) => {
             let column;
@@ -70,7 +70,7 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, rows, pre
             } else if (typeof column === 'string') {
               columnContent = _.get(row, column);
             } else if (typeof column === 'function') {
-              columnContent = column(row);
+              columnContent = column(row, rowIndex);
             } else {
               columnContent = '?';
             }
