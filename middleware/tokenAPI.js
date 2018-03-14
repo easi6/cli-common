@@ -84,8 +84,6 @@ export default function tokenAPIMiddleware(config = {}) {
     // call middleware
 
     const nextWrapper = (action) => { // this is for apiMiddleware's next monkey patch
-      console.log('inside nextWrapper');
-      console.log(action);
       if (action.error) {
         if (action.payload.status === 401) {
           next(action);
