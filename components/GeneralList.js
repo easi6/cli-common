@@ -52,7 +52,7 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, rows, pre
 
     <tbody>
       {_.map(rows, (row, rowIndex) =>
-        (<tr key={row.id}>
+        (<tr key={row.id || rowIndex}>
           {headers.map((keypath, i) => {
             let column;
             if (Array.isArray(columns)) {
