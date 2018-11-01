@@ -9,10 +9,11 @@ const _defaultTimestampColFunc = row =>
     <i className="fa fa-pencil-square-o" /> {moment(row.updated_at).format('YYYY-MM-DD HH:mm Z')}
   </div>);
 
-const GeneralDetail = ({headers, columns = []/* function or keypath */, entity}: {
+const GeneralDetail = ({headers, columns = []/* function or keypath */, entity, halfWidth = false}: {
   headers: Array,
   columns: Array|Object,
   entity: Object,
+  halfWidth: boolean,
 }) => (
   <dl className="row">
     {headers.reduce((acc, title, i) => {
@@ -41,8 +42,8 @@ const GeneralDetail = ({headers, columns = []/* function or keypath */, entity}:
         columnContent = columnContent ? 'true' : 'false';
       }
       return [...acc,
-        <dt className="col-sm-2" key={`key-${title}`}>{title}</dt>,
-        <dd key={`content-${title}`} className="col-sm-10 col-xs-12">{columnContent === undefined || columnContent === null ?
+        <dt className={halfWidth ? 'col-sm-4' : 'col-sm-2'} key={`key-${title}`}>{title}</dt>,
+        <dd key={`content-${title}`} className={`${halfWidth ? 'col-sm-8' : 'col-sm-10'} col-xs-12`}>{columnContent === undefined || columnContent === null ?
           <span className="text-muted">NULL</span> : (columnContent === '' ?
             <span className="text-muted">Empty</span> : columnContent)}</dd>,
       ];

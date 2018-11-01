@@ -6,8 +6,9 @@ const BorderDetail = ({
   headers,
   columns = []/* function or keypath */,
   entity,
-  className,
-  style,
+  halfWidth = false,
+  className = '',
+  style = {},
   okButtonClick,
   okButtonString,
   cancelButtonClick,
@@ -16,6 +17,7 @@ const BorderDetail = ({
   headers: Array,
   columns: Array|Object,
   entity: Object,
+  halfWidth: Boolean,
   className: String,
   style: Object,
   okButtonClick: Function,
@@ -23,27 +25,30 @@ const BorderDetail = ({
   cancelButtonClick: Function,
   cancelButtonString: String,
 }) => (
-  <div className={className} style={{...style, border: 'gray 1px solid', padding: '10px'}}>
-    <Detail
-      headers={headers}
-      columns={columns}
-      entity={entity}
-    />
-    <Button
-      size="sm"
-      color={'primary'}
-      onClick={() => okButtonClick()}
-    >
-      {okButtonString}
-    </Button>
-    <Button
-      size="sm"
-      color={'danger'}
-      onClick={() => cancelButtonClick()}
-      style={{marginLeft: '8px'}}
-    >
-      {cancelButtonString}
-    </Button>
+  <div className={className} style={style}>
+    <div style={{border: 'gray 1px solid', padding: '10px'}}>
+      <Detail
+        headers={headers}
+        columns={columns}
+        entity={entity}
+        halfWidth={halfWidth}
+      />
+      <Button
+        size="sm"
+        color={'primary'}
+        onClick={() => okButtonClick()}
+      >
+        {okButtonString}
+      </Button>
+      <Button
+        size="sm"
+        color={'danger'}
+        onClick={() => cancelButtonClick()}
+        style={{marginLeft: '8px'}}
+      >
+        {cancelButtonString}
+      </Button>
+    </div>
   </div>
 );
 
