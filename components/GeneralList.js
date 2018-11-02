@@ -35,7 +35,7 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, rows, pre
   sortingElements: Object,
   optionHeader: Function,
 }) => (
-  <div style={{overflow: 'scroll'}}>
+  <div style={{'overflow-x': 'scroll', width: '100%'}}>
     <Table responsive hover {...rest}>
       <thead>
         <tr>
