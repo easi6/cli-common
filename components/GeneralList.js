@@ -35,54 +35,56 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, rows, pre
   sortingElements: Object,
   optionHeader: Function,
 }) => (
-  <Table responsive hover {...rest}>
-    <thead>
-      <tr>
-        {headers.map((header) => {
-          if (_.isObject(header)) {
-            return optionHeader(sortingElements, header);
-          }
-          return (
-            <th key={header}>{header}</th>
-          );
-        })}
-        {optionColumn && <th>&nbsp;</th>}
-      </tr>
-    </thead>
-
-    <tbody>
-      {_.map(rows, (row, rowIndex) =>
-        (<tr key={row.id || rowIndex}>
-          {headers.map((keypath, i) => {
-            let column;
-            if (Array.isArray(columns)) {
-              column = columns[i];
-            } else {
-              column = _.isObject(keypath) ? columns[keypath.title] : columns[keypath];
+  <div style={{overflow: 'scroll'}}>
+    <Table responsive hover {...rest}>
+      <thead>
+        <tr>
+          {headers.map((header) => {
+            if (_.isObject(header)) {
+              return optionHeader(sortingElements, header);
             }
-            let columnContent;
-            if (!column) {
-              if (keypath === 'timestamps') {
-                columnContent = _defaultTimestampColFunc(row);
-              } else {
-                columnContent = _.isObject(keypath) ? _.get(row, keypath.title) : _.get(row, keypath);
-              }
-            } else if (typeof column === 'string') {
-              columnContent = _.get(row, column);
-            } else if (typeof column === 'function') {
-              columnContent = column(row, rowIndex);
-            } else {
-              columnContent = '?';
-            }
-
-            return (<td key={`${row.id},col${i}`}>{columnContent === undefined || columnContent === null ?
-              <span className="text-muted">NULL</span> : columnContent}</td>);
+            return (
+              <th key={header}>{header}</th>
+            );
           })}
-          {optionColumn && <td>{optionColumn(prefix, row)}</td>}
-        </tr>),
-      )}
-    </tbody>
-  </Table>
+          {optionColumn && <th>&nbsp;</th>}
+        </tr>
+      </thead>
+
+      <tbody>
+        {_.map(rows, (row, rowIndex) =>
+          (<tr key={row.id || rowIndex}>
+            {headers.map((keypath, i) => {
+              let column;
+              if (Array.isArray(columns)) {
+                column = columns[i];
+              } else {
+                column = _.isObject(keypath) ? columns[keypath.title] : columns[keypath];
+              }
+              let columnContent;
+              if (!column) {
+                if (keypath === 'timestamps') {
+                  columnContent = _defaultTimestampColFunc(row);
+                } else {
+                  columnContent = _.isObject(keypath) ? _.get(row, keypath.title) : _.get(row, keypath);
+                }
+              } else if (typeof column === 'string') {
+                columnContent = _.get(row, column);
+              } else if (typeof column === 'function') {
+                columnContent = column(row, rowIndex);
+              } else {
+                columnContent = '?';
+              }
+
+              return (<td key={`${row.id},col${i}`}>{columnContent === undefined || columnContent === null ?
+                <span className="text-muted">NULL</span> : columnContent}</td>);
+            })}
+            {optionColumn && <td>{optionColumn(prefix, row)}</td>}
+          </tr>),
+        )}
+      </tbody>
+    </Table>
+  </div>
 );
 
 export default GeneralList;
