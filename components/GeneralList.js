@@ -26,9 +26,10 @@ const _defaultSortableHeader = (sortingElements, header) => {
 };
 
 
-const GeneralList = ({headers, columns = [] /* function or keypath */, rows, prefix, sortingElements, optionHeader = _defaultSortableHeader, optionColumn = _defaultOptionColFunc, ...rest}: {
+const GeneralList = ({headers, columns = [] /* function or keypath */, columnClassNames = [], rows, prefix, sortingElements, optionHeader = _defaultSortableHeader, optionColumn = _defaultOptionColFunc, ...rest}: {
   headers: Array,
   columns: Array|Object,
+  columnClassNames: Array|Object,
   rows: Array,
   prefix: string,
   optionColumn: boolean|Function,
@@ -55,6 +56,22 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, rows, pre
         {_.map(rows, (row, rowIndex) =>
           (<tr key={row.id || rowIndex}>
             {headers.map((keypath, i) => {
+              let columnClassName;
+              if (Array.isArray(columnClassNames)) {
+                columnClassName = columnClassNames[i];
+              } else {
+                columnClassName = _.isObject(keypath) ? columnClassNames[keypath.title] : columnClassNames[keypath];
+              }
+
+              let columnClassNameString;
+              if (typeof columnClassName === 'string') {
+                columnClassNameString = columnClassName;
+              } else if (typeof columnClassName === 'function') {
+                columnClassNameString = columnClassName(row, rowIndex);
+              } else {
+                columnClassNameString = '';
+              }
+
               let column;
               if (Array.isArray(columns)) {
                 column = columns[i];
@@ -76,7 +93,7 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, rows, pre
                 columnContent = '?';
               }
 
-              return (<td key={`${row.id},col${i}`}>{columnContent === undefined || columnContent === null ?
+              return (<td key={`${row.id},col${i}`} className={columnClassNameString || ''}>{columnContent === undefined || columnContent === null ?
                 <span className="text-muted">NULL</span> : columnContent}</td>);
             })}
             {optionColumn && <td>{optionColumn(prefix, row)}</td>}
