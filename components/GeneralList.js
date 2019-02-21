@@ -108,9 +108,9 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, columnCla
       </div>
     </Desktop>
     <Mobile>
-      {rows && rows.map(entity => (
+      {rows && rows.map((entity, index) => (
         <Card style={{padding: '10px'}}>
-          <GeneralDetail headers={headers} columns={columns} entity={entity} halfWidth />
+          <GeneralDetail headers={headers} columns={columns} entity={entity} halfWidth index={index} />
           <span>{optionColumn && optionColumn(prefix, entity)}</span>
         </Card>))}
     </Mobile>
