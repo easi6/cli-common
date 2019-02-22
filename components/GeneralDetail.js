@@ -9,12 +9,11 @@ const _defaultTimestampColFunc = row =>
     <i className="fa fa-pencil-square-o" /> {moment(row.updated_at).format('YYYY-MM-DD HH:mm Z')}
   </div>);
 
-const GeneralDetail = ({headers, columns = []/* function or keypath */, entity, halfWidth = false, index}: {
+const GeneralDetail = ({headers, columns = []/* function or keypath */, entity, halfWidth = false}: {
   headers: Array,
   columns: Array|Object,
   entity: Object,
   halfWidth: boolean,
-  index: number,
 }) => (
   <dl className="row">
     {headers.reduce((acc, title, i) => {
@@ -35,7 +34,7 @@ const GeneralDetail = ({headers, columns = []/* function or keypath */, entity, 
       } else if (typeof column === 'string') {
         columnContent = _.get(entity, column);
       } else if (typeof column === 'function') {
-        columnContent = column(entity, index);
+        columnContent = column(entity);
       } else {
         columnContent = column;
       }
