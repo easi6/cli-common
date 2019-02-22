@@ -151,7 +151,7 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, columnCla
 
               return (
                 <div key={`${row.id}${i}`} style={{marginTop: '5px', marginBottom: '5px'}}>
-                  <div key={`${row.id},${i}`}><b>{keypath}</b></div>
+                  <div key={`${row.id},${i}`}><b>{keypath.title || keypath}</b></div>
                   <div key={`${row.id},col${i}`} className={columnClassNameString || ''}>
                     {columnContent === undefined || columnContent === null
                       ? <span className="text-muted">NULL</span> : columnContent}
