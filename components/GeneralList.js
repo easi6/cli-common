@@ -1,8 +1,10 @@
 import React from 'react';
 import moment from 'moment';
-import {Table} from 'reactstrap';
+import {Table, Card} from 'reactstrap';
 import _ from 'lodash';
 import {Link} from 'react-router-dom';
+import GeneralDetail from './GeneralDetail';
+import {Desktop, Mobile} from './ByScreen';
 
 const _defaultOptionColFunc = (prefix, row) => <Link to={`/${prefix}/${row.id}`}>show</Link>;
 
@@ -36,25 +38,79 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, columnCla
   sortingElements: Object,
   optionHeader: Function,
 }) => (
-  <div style={{wordBreak: 'break-word', width: '100%'}}>
-    <Table responsive hover {...rest}>
-      <thead>
-        <tr>
-          {headers.map((header) => {
-            if (_.isObject(header)) {
-              return optionHeader(sortingElements, header);
-            }
-            return (
-              <th key={header}>{header}</th>
-            );
-          })}
-          {optionColumn && <th>&nbsp;</th>}
-        </tr>
-      </thead>
+  <div>
+    <Desktop>
+      <div style={{wordBreak: 'break-word', width: '100%'}}>
+        <Table responsive hover {...rest}>
+          <thead>
+            <tr>
+              {headers.map((header) => {
+                if (_.isObject(header)) {
+                  return optionHeader(sortingElements, header);
+                }
+                return (
+                  <th key={header}>{header}</th>
+                );
+              })}
+              {optionColumn && <th>&nbsp;</th>}
+            </tr>
+          </thead>
 
-      <tbody>
-        {_.map(rows, (row, rowIndex) =>
-          (<tr key={row.id || rowIndex}>
+          <tbody>
+            {_.map(rows, (row, rowIndex) =>
+              (<tr key={row.id || rowIndex}>
+                {headers.map((keypath, i) => {
+                  let columnClassName;
+                  if (Array.isArray(columnClassNames)) {
+                    columnClassName = columnClassNames[i];
+                  } else {
+                    columnClassName = _.isObject(keypath) ? columnClassNames[keypath.title] : columnClassNames[keypath];
+                  }
+
+                  let columnClassNameString;
+                  if (typeof columnClassName === 'string') {
+                    columnClassNameString = columnClassName;
+                  } else if (typeof columnClassName === 'function') {
+                    columnClassNameString = columnClassName(row, rowIndex);
+                  } else {
+                    columnClassNameString = '';
+                  }
+
+                  let column;
+                  if (Array.isArray(columns)) {
+                    column = columns[i];
+                  } else {
+                    column = _.isObject(keypath) ? columns[keypath.title] : columns[keypath];
+                  }
+                  let columnContent;
+                  if (!column) {
+                    if (keypath === 'timestamps') {
+                      columnContent = _defaultTimestampColFunc(row);
+                    } else {
+                      columnContent = _.isObject(keypath) ? _.get(row, keypath.title) : _.get(row, keypath);
+                    }
+                  } else if (typeof column === 'string') {
+                    columnContent = _.get(row, column);
+                  } else if (typeof column === 'function') {
+                    columnContent = column(row, rowIndex);
+                  } else {
+                    columnContent = '?';
+                  }
+
+                  return (<td key={`${row.id},col${i}`} className={columnClassNameString || ''}>{columnContent === undefined || columnContent === null ?
+                    <span className="text-muted">NULL</span> : columnContent}</td>);
+                })}
+                {optionColumn && <td>{optionColumn(prefix, row)}</td>}
+              </tr>),
+            )}
+          </tbody>
+        </Table>
+      </div>
+    </Desktop>
+    <Mobile>
+      {_.map(rows, (row, rowIndex) => (
+        <Card style={{padding: '10px'}} key={rowIndex}>
+          <div key={row.id || rowIndex}>
             {headers.map((keypath, i) => {
               let columnClassName;
               if (Array.isArray(columnClassNames)) {
@@ -93,14 +149,22 @@ const GeneralList = ({headers, columns = [] /* function or keypath */, columnCla
                 columnContent = '?';
               }
 
-              return (<td key={`${row.id},col${i}`} className={columnClassNameString || ''}>{columnContent === undefined || columnContent === null ?
-                <span className="text-muted">NULL</span> : columnContent}</td>);
+              return (
+                <div key={`${row.id}${i}`} style={{marginTop: '5px', marginBottom: '5px'}}>
+                  <div key={`${row.id},${i}`}><b>{keypath.title || keypath}</b></div>
+                  <div key={`${row.id},col${i}`} className={columnClassNameString || ''}>
+                    {columnContent === undefined || columnContent === null
+                      ? <span className="text-muted">NULL</span> : columnContent}
+                  </div>
+                </div>
+              );
             })}
-            {optionColumn && <td>{optionColumn(prefix, row)}</td>}
-          </tr>),
-        )}
-      </tbody>
-    </Table>
+            {optionColumn && <div>{optionColumn(prefix, row)}</div>}
+          </div>
+        </Card>
+      ))}
+
+    </Mobile>
   </div>
 );
 

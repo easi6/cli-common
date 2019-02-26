@@ -2,6 +2,7 @@ import React from 'react';
 import {Pagination, PaginationItem, PaginationLink} from 'reactstrap';
 import qs from 'qs';
 import {withRouter} from 'react-router-dom';
+import {Desktop, Mobile} from './ByScreen';
 
 const splitPagesToLimit = (total, current, limit = 5) => {
   let pages = [1];
@@ -39,60 +40,74 @@ const splitPagesToLimit = (total, current, limit = 5) => {
 
   return pages;
 };
+
 const Paginator = ({search, total, current, history}: {
   search: Object,
   total: number,
   current: number,
   history: Object,
-}) => (
-  <nav>
-    <Pagination>
-      <PaginationItem disabled={current === 1}>
-        <PaginationLink
-          previous
-          href=""
-          onClick={(e) => {
-            e.preventDefault();
-            history.push({
-              search: qs.stringify({
-                ...search,
-                page: Math.max(current - 1, 1),
-              }),
-            });
-          }}
-        >Prev</PaginationLink>
-      </PaginationItem>
-      {
-        splitPagesToLimit(Number(total), Number(current)).map((page, idx) => ( // eslint-disable-next-line react/no-array-index-key
-          <PaginationItem key={idx} active={Number(current) === page} disabled={page === '...'}>
-            <PaginationLink
-              href=""
-              onClick={(e) => {
-                e.preventDefault();
-                e.target.blur();
-                history.push({search: qs.stringify({...search, page})});
-              }}
-            >{page}</PaginationLink>
-          </PaginationItem>
-        ))
-      }
-      <PaginationItem disabled={current >= total}>
-        <PaginationLink
-          next
-          href=""
-          onClick={(e) => {
-            e.preventDefault();
-            history.push({
-              search: qs.stringify({
-                ...search,
-                page: Math.min(current + 1, total),
-              }),
-            });
-          }}
-        >Next</PaginationLink>
-      </PaginationItem>
-    </Pagination>
-  </nav>
-);
+}) => {
+  const renderPages = thePage => (splitPagesToLimit(Number(total), Number(current), thePage).map((page, idx) => ( // eslint-disable-next-line react/no-array-index-key
+    <PaginationItem key={idx} active={Number(current) === page} disabled={page === '...'}>
+      <PaginationLink
+        href=""
+        onClick={(e) => {
+          e.preventDefault();
+          e.target.blur();
+          history.push({search: qs.stringify({...search, page})});
+        }}
+      >{page}</PaginationLink>
+    </PaginationItem>
+  )));
+
+  return (
+    <nav>
+      <Pagination size={'sm'}>
+        <PaginationItem disabled={current === 1}>
+          <PaginationLink
+            previous
+            href=""
+            onClick={(e) => {
+              e.preventDefault();
+              history.push({
+                search: qs.stringify({
+                  ...search,
+                  page: Math.max(current - 1, 1),
+                }),
+              });
+            }}
+          >
+            <Desktop>Prev</Desktop>
+            <Mobile>&#x2190;</Mobile>
+          </PaginationLink>
+        </PaginationItem>
+        <Desktop>
+          {renderPages(5)}
+        </Desktop>
+        <Mobile>
+          {renderPages(2)}
+        </Mobile>
+        <PaginationItem disabled={current >= total}>
+          <PaginationLink
+            next
+            href=""
+            onClick={(e) => {
+              e.preventDefault();
+              history.push({
+                search: qs.stringify({
+                  ...search,
+                  page: Math.min(current + 1, total),
+                }),
+              });
+            }}
+          >
+            <Desktop>Next</Desktop>
+            <Mobile>&#x2192;︎︎</Mobile>
+          </PaginationLink>
+        </PaginationItem>
+      </Pagination>
+    </nav>
+  );
+};
 
 export default withRouter(Paginator);
