@@ -1,3 +1,4 @@
+// 
 import React from 'react';
 import moment from 'moment';
 import {Table} from 'reactstrap';
@@ -26,16 +27,7 @@ const _defaultSortableHeader = (sortingElements, header) => {
 };
 
 
-const GeneralList = ({headers, columns = [] /* function or keypath */, columnClassNames = [], rows, prefix, sortingElements, optionHeader = _defaultSortableHeader, optionColumn = _defaultOptionColFunc, ...rest}: {
-  headers: Array,
-  columns: Array|Object,
-  columnClassNames: Array|Object,
-  rows: Array,
-  prefix: string,
-  optionColumn: boolean|Function,
-  sortingElements: Object,
-  optionHeader: Function,
-}) => (
+const GeneralList = ({headers, columns = [] /* function or keypath */, columnClassNames = [], rows, prefix, sortingElements, optionHeader = _defaultSortableHeader, optionColumn = _defaultOptionColFunc, ...rest}) => (
   <div style={{wordBreak: 'break-word', width: '100%'}}>
     <Table responsive hover {...rest}>
       <thead>

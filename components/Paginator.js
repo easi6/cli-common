@@ -1,3 +1,4 @@
+// 
 import React from 'react';
 import {Pagination, PaginationItem, PaginationLink} from 'reactstrap';
 import qs from 'qs';
@@ -39,12 +40,7 @@ const splitPagesToLimit = (total, current, limit = 5) => {
 
   return pages;
 };
-const Paginator = ({search, total, current, history}: {
-  search: Object,
-  total: number,
-  current: number,
-  history: Object,
-}) => (
+const Paginator = ({search, total, current, history}) => (
   <nav>
     <Pagination>
       <PaginationItem disabled={current === 1}>
