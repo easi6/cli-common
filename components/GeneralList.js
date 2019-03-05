@@ -32,7 +32,7 @@ const _defaultSortableHeader = (sortingElements, header) => {
 const GeneralList = ({
   headers,
   columns /* function or keypath */,
-  columnClassNames = [],
+  columnClassNames,
   rows,
   prefix,
   sortingElements,
