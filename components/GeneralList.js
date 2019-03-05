@@ -31,11 +31,11 @@ const _defaultSortableHeader = (sortingElements, header) => {
 
 const GeneralList = ({
   headers,
-  columns = [] /* function or keypath */,
-  columnClassNames = [],
+  columns = {} /* function or keypath */,
+  columnClassNames = {},
   rows,
   prefix,
-  sortingElements,
+  sortingElements = {},
   optionHeader = _defaultSortableHeader,
   optionColumn = _defaultOptionColFunc,
   ...rest

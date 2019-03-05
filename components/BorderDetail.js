@@ -1,11 +1,11 @@
-// 
+//
 import React from 'react';
 import { Button } from 'reactstrap';
 import Detail from './GeneralDetail';
 
 const BorderDetail = ({
   headers,
-  columns = [] /* function or keypath */,
+  columns = {} /* function or keypath */,
   entity,
   halfWidth = false,
   className = '',
