@@ -35,7 +35,7 @@ const GeneralList = ({
   columnClassNames = {},
   rows,
   prefix,
-  sortingElements,
+  sortingElements = {},
   optionHeader = _defaultSortableHeader,
   optionColumn = _defaultOptionColFunc,
   ...rest
