@@ -11,7 +11,7 @@ const _defaultTimestampColFunc = (row) => (
   </div>
 );
 
-const GeneralDetail = ({ headers, columns /* function or keypath */, entity, halfWidth = false }) => (
+const GeneralDetail = ({ headers, columns = {} /* function or keypath */, entity, halfWidth = false }) => (
   <dl className='row'>
     {headers.reduce((acc, title, i) => {
       let column;
