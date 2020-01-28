@@ -38,6 +38,7 @@ const GeneralList = ({
   sortingElements = {},
   optionHeader = _defaultSortableHeader,
   optionColumn = _defaultOptionColFunc,
+  subTable = null,
   ...rest
 }) => (
   <div>
@@ -58,57 +59,60 @@ const GeneralList = ({
 
           <tbody>
             {_.map(rows, (row, rowIndex) => (
-              <tr key={row.id || rowIndex}>
-                {headers.map((keypath, i) => {
-                  let columnClassName;
-                  if (Array.isArray(columnClassNames)) {
-                    columnClassName = columnClassNames[i];
-                  } else {
-                    columnClassName = _.isObject(keypath) ? columnClassNames[keypath.title] : columnClassNames[keypath];
-                  }
-
-                  let columnClassNameString;
-                  if (typeof columnClassName === 'string') {
-                    columnClassNameString = columnClassName;
-                  } else if (typeof columnClassName === 'function') {
-                    columnClassNameString = columnClassName(row, rowIndex);
-                  } else {
-                    columnClassNameString = '';
-                  }
-
-                  let column;
-                  if (Array.isArray(columns)) {
-                    column = columns[i];
-                  } else {
-                    column = _.isObject(keypath) ? columns[keypath.title] : columns[keypath];
-                  }
-                  let columnContent;
-                  if (!column) {
-                    if (keypath === 'timestamps') {
-                      columnContent = _defaultTimestampColFunc(row);
+              <>
+                <tr key={row.id || rowIndex}>
+                  {headers.map((keypath, i) => {
+                    let columnClassName;
+                    if (Array.isArray(columnClassNames)) {
+                      columnClassName = columnClassNames[i];
                     } else {
-                      columnContent = _.isObject(keypath) ? _.get(row, keypath.title) : _.get(row, keypath);
+                      columnClassName = _.isObject(keypath) ? columnClassNames[keypath.title] : columnClassNames[keypath];
                     }
-                  } else if (typeof column === 'string') {
-                    columnContent = _.get(row, column);
-                  } else if (typeof column === 'function') {
-                    columnContent = column(row, rowIndex);
-                  } else {
-                    columnContent = '?';
-                  }
 
-                  return (
-                    <td key={`${row.id},col${i}`} className={columnClassNameString || ''}>
-                      {columnContent === undefined || columnContent === null ? (
-                        <span className='text-muted'>NULL</span>
-                      ) : (
-                        columnContent
-                      )}
-                    </td>
-                  );
-                })}
-                {optionColumn && <td>{optionColumn(prefix, row)}</td>}
-              </tr>
+                    let columnClassNameString;
+                    if (typeof columnClassName === 'string') {
+                      columnClassNameString = columnClassName;
+                    } else if (typeof columnClassName === 'function') {
+                      columnClassNameString = columnClassName(row, rowIndex);
+                    } else {
+                      columnClassNameString = '';
+                    }
+
+                    let column;
+                    if (Array.isArray(columns)) {
+                      column = columns[i];
+                    } else {
+                      column = _.isObject(keypath) ? columns[keypath.title] : columns[keypath];
+                    }
+                    let columnContent;
+                    if (!column) {
+                      if (keypath === 'timestamps') {
+                        columnContent = _defaultTimestampColFunc(row);
+                      } else {
+                        columnContent = _.isObject(keypath) ? _.get(row, keypath.title) : _.get(row, keypath);
+                      }
+                    } else if (typeof column === 'string') {
+                      columnContent = _.get(row, column);
+                    } else if (typeof column === 'function') {
+                      columnContent = column(row, rowIndex);
+                    } else {
+                      columnContent = '?';
+                    }
+
+                    return (
+                      <td key={`${row.id},col${i}`} className={columnClassNameString || ''}>
+                        {columnContent === undefined || columnContent === null ? (
+                          <span className='text-muted'>NULL</span>
+                        ) : (
+                          columnContent
+                        )}
+                      </td>
+                    );
+                  })}
+                  {optionColumn && <td>{optionColumn(prefix, row)}</td>}
+                </tr>
+                {typeof subTable === 'function' && subTable(row, rowIndex)}
+              </>
             ))}
           </tbody>
         </Table>
