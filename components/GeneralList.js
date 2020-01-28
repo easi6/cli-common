@@ -39,6 +39,7 @@ const GeneralList = ({
   optionHeader = _defaultSortableHeader,
   optionColumn = _defaultOptionColFunc,
   subTable = null,
+  thStyle = {},
   ...rest
 }) => (
   <div>
@@ -51,7 +52,7 @@ const GeneralList = ({
                 if (_.isObject(header)) {
                   return optionHeader(sortingElements, header);
                 }
-                return <th key={header}>{header}</th>;
+                return <th key={header} style={thStyle}>{header}</th>;
               })}
               {optionColumn && <th>&nbsp;</th>}
             </tr>
