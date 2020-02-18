@@ -5,7 +5,7 @@ import qs from 'qs';
 import { withRouter } from 'react-router-dom';
 import { Desktop, Mobile } from './ByScreen';
 
-const splitPagesToLimit = (total, current, limit = 5) => {
+export const splitPagesToLimit = (total, current, limit = 5) => {
   let pages = [1];
   if (total <= 1) {
     return pages;
