@@ -40,6 +40,8 @@ const GeneralList = ({
   optionColumn = _defaultOptionColFunc,
   subTable = null,
   thStyle = {},
+  onClickCallbackFn = null,
+  selectTableStyle = { index: -999 },
   ...rest
 }) => (
   <div>
@@ -61,7 +63,11 @@ const GeneralList = ({
           <tbody>
             {_.map(rows, (row, rowIndex) => (
               <>
-                <tr key={row.id || rowIndex}>
+                <tr
+                  style={{ backgroundColor: selectTableStyle.index === rowIndex ? selectTableStyle.color : 'white' }}
+                  key={row.id || rowIndex}
+                  onClick={() => onClickCallbackFn && onClickCallbackFn(row, rowIndex)}
+                >
                   {headers.map((keypath, i) => {
                     let columnClassName;
                     if (Array.isArray(columnClassNames)) {
