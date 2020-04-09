@@ -41,7 +41,7 @@ const GeneralList = ({
   subTable = null,
   thStyle = {},
   onClickCallbackFn = null,
-  selectTableData = { index: null, backgroundColor: 'white' },
+  selectTableData = { index: -999, backgroundColor: 'white' },
   ...rest
 }) => (
   <div>
@@ -61,8 +61,20 @@ const GeneralList = ({
           </thead>
 
           <tbody>
-            {_.map(rows, (row, rowIndex) => {
-              let tableBackgroundColor = 'white';
+            {_.map(rows, (row, rowIndex) => (
+              <>
+                <tr
+                  style={{ backgroundColor: selectTableData.index === rowIndex ? selectTableData.backgroundColor : 'white' }}
+                  key={row.id || rowIndex}
+                  onClick={() => onClickCallbackFn && onClickCallbackFn(row, rowIndex)}
+                >
+                  {headers.map((keypath, i) => {
+                    let columnClassName;
+                    if (Array.isArray(columnClassNames)) {
+                      columnClassName = columnClassNames[i];
+                    } else {
+                      columnClassName = _.isObject(keypath) ? columnClassNames[keypath.title] : columnClassNames[keypath];
+                    }
 
               if (
                 (Array.isArray(selectTableData.index) && selectTableData.index.includes(row.id || rowIndex)) ||
