@@ -41,7 +41,7 @@ const GeneralList = ({
   subTable = null,
   thStyle = {},
   onClickCallbackFn = null,
-  selectTableStyle = { index: -999 },
+  selectTableData = { index: -999, backgroundColor: 'white' },
   ...rest
 }) => (
   <div>
@@ -64,7 +64,7 @@ const GeneralList = ({
             {_.map(rows, (row, rowIndex) => (
               <>
                 <tr
-                  style={{ backgroundColor: selectTableStyle.index === rowIndex ? selectTableStyle.color : 'white' }}
+                  style={{ backgroundColor: selectTableData.index === rowIndex ? selectTableData.backgroundColor : 'white' }}
                   key={row.id || rowIndex}
                   onClick={() => onClickCallbackFn && onClickCallbackFn(row, rowIndex)}
                 >
