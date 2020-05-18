@@ -61,20 +61,8 @@ const GeneralList = ({
           </thead>
 
           <tbody>
-            {_.map(rows, (row, rowIndex) => (
-              <>
-                <tr
-                  style={{ backgroundColor: (selectTableData.index === rowIndex || selectTableData.index === row.id) ? selectTableData.backgroundColor : 'white' }}
-                  key={row.id || rowIndex}
-                  onClick={() => onClickCallbackFn && onClickCallbackFn(row, rowIndex)}
-                >
-                  {headers.map((keypath, i) => {
-                    let columnClassName;
-                    if (Array.isArray(columnClassNames)) {
-                      columnClassName = columnClassNames[i];
-                    } else {
-                      columnClassName = _.isObject(keypath) ? columnClassNames[keypath.title] : columnClassNames[keypath];
-                    }
+            {_.map(rows, (row, rowIndex) => {
+              let tableBackgroundColor = 'white';
 
               if (
                 (Array.isArray(selectTableData.index) && selectTableData.index.includes(row.id || rowIndex)) ||
