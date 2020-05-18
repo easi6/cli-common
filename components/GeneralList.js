@@ -61,66 +61,78 @@ const GeneralList = ({
           </thead>
 
           <tbody>
-            {_.map(rows, (row, rowIndex) => (
-              <>
-                <tr
-                  style={{ backgroundColor: (selectTableData.index === rowIndex || selectTableData.index === row.id) ? selectTableData.backgroundColor : 'white' }}
-                  key={row.id || rowIndex}
-                  onClick={() => onClickCallbackFn && onClickCallbackFn(row, rowIndex)}
-                >
-                  {headers.map((keypath, i) => {
-                    let columnClassName;
-                    if (Array.isArray(columnClassNames)) {
-                      columnClassName = columnClassNames[i];
-                    } else {
-                      columnClassName = _.isObject(keypath) ? columnClassNames[keypath.title] : columnClassNames[keypath];
-                    }
+            {_.map(rows, (row, rowIndex) => {
+              let tableBackgroundColor = 'white';
 
-                    let columnClassNameString;
-                    if (typeof columnClassName === 'string') {
-                      columnClassNameString = columnClassName;
-                    } else if (typeof columnClassName === 'function') {
-                      columnClassNameString = columnClassName(row, rowIndex);
-                    } else {
-                      columnClassNameString = '';
-                    }
+              if (
+                (Array.isArray(selectTableData.index) && selectTableData.index.includes(row.id || rowIndex)) ||
+                (selectTableData.index === (rowIndex || row.id))
+              ) {
+                tableBackgroundColor = selectTableData.backgroundColor;
+              }
 
-                    let column;
-                    if (Array.isArray(columns)) {
-                      column = columns[i];
-                    } else {
-                      column = _.isObject(keypath) ? columns[keypath.title] : columns[keypath];
-                    }
-                    let columnContent;
-                    if (!column) {
-                      if (keypath === 'timestamps') {
-                        columnContent = _defaultTimestampColFunc(row);
+
+              return (
+                <>
+                  <tr
+                    style={{ backgroundColor: tableBackgroundColor }}
+                    key={row.id || rowIndex}
+                    onClick={() => onClickCallbackFn && onClickCallbackFn(row, rowIndex)}
+                  >
+                    {headers.map((keypath, i) => {
+                      let columnClassName;
+                      if (Array.isArray(columnClassNames)) {
+                        columnClassName = columnClassNames[i];
                       } else {
-                        columnContent = _.isObject(keypath) ? _.get(row, keypath.title) : _.get(row, keypath);
+                        columnClassName = _.isObject(keypath) ? columnClassNames[keypath.title] : columnClassNames[keypath];
                       }
-                    } else if (typeof column === 'string') {
-                      columnContent = _.get(row, column);
-                    } else if (typeof column === 'function') {
-                      columnContent = column(row, rowIndex);
-                    } else {
-                      columnContent = '?';
-                    }
 
-                    return (
-                      <td key={`${row.id},col${i}`} className={columnClassNameString || ''}>
-                        {columnContent === undefined || columnContent === null ? (
-                          <span className='text-muted'>NULL</span>
-                        ) : (
-                          columnContent
-                        )}
-                      </td>
-                    );
-                  })}
-                  {optionColumn && <td>{optionColumn(prefix, row)}</td>}
-                </tr>
-                {typeof subTable === 'function' && subTable(row, rowIndex)}
-              </>
-            ))}
+                      let columnClassNameString;
+                      if (typeof columnClassName === 'string') {
+                        columnClassNameString = columnClassName;
+                      } else if (typeof columnClassName === 'function') {
+                        columnClassNameString = columnClassName(row, rowIndex);
+                      } else {
+                        columnClassNameString = '';
+                      }
+
+                      let column;
+                      if (Array.isArray(columns)) {
+                        column = columns[i];
+                      } else {
+                        column = _.isObject(keypath) ? columns[keypath.title] : columns[keypath];
+                      }
+                      let columnContent;
+                      if (!column) {
+                        if (keypath === 'timestamps') {
+                          columnContent = _defaultTimestampColFunc(row);
+                        } else {
+                          columnContent = _.isObject(keypath) ? _.get(row, keypath.title) : _.get(row, keypath);
+                        }
+                      } else if (typeof column === 'string') {
+                        columnContent = _.get(row, column);
+                      } else if (typeof column === 'function') {
+                        columnContent = column(row, rowIndex);
+                      } else {
+                        columnContent = '?';
+                      }
+
+                      return (
+                        <td key={`${row.id},col${i}`} className={columnClassNameString || ''}>
+                          {columnContent === undefined || columnContent === null ? (
+                            <span className='text-muted'>NULL</span>
+                          ) : (
+                            columnContent
+                          )}
+                        </td>
+                      );
+                    })}
+                    {optionColumn && <td>{optionColumn(prefix, row)}</td>}
+                  </tr>
+                  {typeof subTable === 'function' && subTable(row, rowIndex)}
+                </>
+              )
+            })}
           </tbody>
         </Table>
       </div>
