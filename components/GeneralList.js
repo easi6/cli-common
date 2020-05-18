@@ -71,7 +71,6 @@ const GeneralList = ({
                 tableBackgroundColor = selectTableData.backgroundColor;
               }
 
-
               return (
                 <>
                   <tr
