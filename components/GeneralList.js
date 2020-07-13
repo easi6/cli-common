@@ -1,5 +1,5 @@
 //
-import React from 'react';
+import React, { Fragment } from 'react';
 import moment from 'moment';
 import { Table, Card } from 'reactstrap';
 import _ from 'lodash';
@@ -66,13 +66,13 @@ const GeneralList = ({
 
               if (
                 (Array.isArray(selectTableData.index) && selectTableData.index.includes(row.id || rowIndex)) ||
-                (selectTableData.index === (rowIndex || row.id))
+                (selectTableData.index === rowIndex || selectTableData.index === row.id)
               ) {
                 tableBackgroundColor = selectTableData.backgroundColor;
               }
 
               return (
-                <>
+                <Fragment key={`${row.id}_${rowIndex}`}>
                   <tr
                     style={{ backgroundColor: tableBackgroundColor }}
                     key={row.id || rowIndex}
@@ -129,7 +129,7 @@ const GeneralList = ({
                     {optionColumn && <td>{optionColumn(prefix, row)}</td>}
                   </tr>
                   {typeof subTable === 'function' && subTable(row, rowIndex)}
-                </>
+                </Fragment>
               )
             })}
           </tbody>

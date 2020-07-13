@@ -42,7 +42,7 @@ export const splitPagesToLimit = (total, current, limit = 5) => {
   return pages;
 };
 
-const Paginator = ({ search, total, current, history }) => {
+const Paginator = ({ search, total, current, history, onClick = {} }) => {
   const renderPages = (thePage) =>
     splitPagesToLimit(Number(total), Number(current), thePage).map((
       page,
@@ -54,6 +54,11 @@ const Paginator = ({ search, total, current, history }) => {
           onClick={(e) => {
             e.preventDefault();
             e.target.blur();
+
+            if (onClick.page) {
+              return onClick.page(e, page);
+            }
+
             history.push({ search: qs.stringify({ ...search, page }) });
           }}
         >
@@ -71,6 +76,11 @@ const Paginator = ({ search, total, current, history }) => {
             href=''
             onClick={(e) => {
               e.preventDefault();
+
+              if (onClick.previous) {
+                return onClick.previous(e);
+              }
+
               history.push({
                 search: qs.stringify({
                   ...search,
@@ -91,6 +101,11 @@ const Paginator = ({ search, total, current, history }) => {
             href=''
             onClick={(e) => {
               e.preventDefault();
+
+              if (onClick.next) {
+                return onClick.next(e);
+              }
+
               history.push({
                 search: qs.stringify({
                   ...search,
