@@ -2,6 +2,7 @@
 import React from 'react';
 import moment from 'moment';
 import _ from 'lodash';
+import util from 'util';
 
 const _defaultTimestampColFunc = (row) => (
   <div>
@@ -38,12 +39,19 @@ const GeneralDetail = ({ headers, columns = {} /* function or keypath */, entity
       if (typeof columnContent === 'boolean') {
         columnContent = columnContent ? 'true' : 'false';
       }
+      if (columnContent !== null && _.isPlainObject(columnContent) && !React.isValidElement(columnContent)) {
+        columnContent = util.inspect(columnContent, { compact: false });
+      }
       return [
         ...acc,
         <dt className={halfWidth ? 'col-sm-4' : 'col-sm-2'} key={`key-${title}`}>
           {title}
         </dt>,
-        <dd key={`content-${title}`} className={`${halfWidth ? 'col-sm-8' : 'col-sm-10'} col-xs-12`}>
+        <dd
+          key={`content-${title}`}
+          className={`${halfWidth ? 'col-sm-8' : 'col-sm-10'} col-xs-12`}
+          style={{ whiteSpace: 'pre-wrap' }}
+        >
           {columnContent === undefined || columnContent === null ? (
             <span className='text-muted'>NULL</span>
           ) : columnContent === '' ? (
