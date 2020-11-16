@@ -3,6 +3,7 @@ import React from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 import util from 'util';
+import { Col } from 'reactstrap';
 
 const _defaultTimestampColFunc = (row) => (
   <div>
@@ -44,12 +45,12 @@ const GeneralDetail = ({ headers, columns = {} /* function or keypath */, entity
       }
       return [
         ...acc,
-        <dt className={halfWidth ? 'col-sm-6' : 'col-sm-2'} key={`key-${title}`}>
+        <dt className={halfWidth ? 'col-sm-6 col-xl-2' : 'col-sm-2'} key={`key-${title}`}>
           {title}
         </dt>,
         <dd
           key={`content-${title}`}
-          className={`${halfWidth ? 'col-sm-6' : 'col-sm-10'} col-xs-12`}
+          className={`${halfWidth ? 'col-sm-6 col-xl-10' : 'col-sm-10'} col-xs-12`}
           style={{ whiteSpace: 'pre-wrap' }}
         >
           {columnContent === undefined || columnContent === null ? (
