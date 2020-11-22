@@ -45,12 +45,12 @@ const GeneralDetail = ({ headers, columns = {} /* function or keypath */, entity
       }
       return [
         ...acc,
-        <dt className={halfWidth ? 'col-sm-6 col-xl-2' : 'col-sm-2'} key={`key-${title}`}>
+        <dt className={halfWidth ? 'col-sm-6 col-xl-4' : 'col-sm-2'} key={`key-${title}`}>
           {title}
         </dt>,
         <dd
           key={`content-${title}`}
-          className={`${halfWidth ? 'col-sm-6 col-xl-10' : 'col-sm-10'} col-xs-12`}
+          className={`${halfWidth ? 'col-sm-6 col-xl-8' : 'col-sm-10'} col-xs-12`}
           style={{ whiteSpace: 'pre-wrap' }}
         >
           {columnContent === undefined || columnContent === null ? (
