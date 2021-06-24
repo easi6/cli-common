@@ -7,9 +7,9 @@ import { Col } from 'reactstrap';
 
 const _defaultTimestampColFunc = (row) => (
   <div>
-    <i className='fa fa-plus-square-o' /> {moment(row.created_at).format('YYYY-MM-DD HH:mm Z')}
+    <i className='fa fa-plus-square-o' /> {moment(row.created_at ?? row.createdAt).format('YYYY-MM-DD HH:mm Z')}
     <br />
-    <i className='fa fa-pencil-square-o' /> {moment(row.updated_at).format('YYYY-MM-DD HH:mm Z')}
+    <i className='fa fa-pencil-square-o' /> {moment(row.updated_at ?? row.updatedAt).format('YYYY-MM-DD HH:mm Z')}
   </div>
 );
 
