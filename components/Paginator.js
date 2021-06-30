@@ -42,30 +42,32 @@ export const splitPagesToLimit = (total, current, limit = 5) => {
   return pages;
 };
 
-const Paginator = ({ search, total, current, history, onClick = {} }) => {
+const Paginator = ({ search, total, current, history, onClick = {}, pageKey = 'page' }) => {
   const renderPages = (thePage) =>
-    splitPagesToLimit(Number(total), Number(current), thePage).map((
-      page,
-      idx, // eslint-disable-next-line react/no-array-index-key
-    ) => (
-      <PaginationItem key={idx} active={Number(current) === page} disabled={page === '...'}>
-        <PaginationLink
-          href=''
-          onClick={(e) => {
-            e.preventDefault();
-            e.target.blur();
+    splitPagesToLimit(Number(total), Number(current), thePage).map(
+      (
+        page,
+        idx, // eslint-disable-next-line react/no-array-index-key
+      ) => (
+        <PaginationItem key={idx} active={Number(current) === page} disabled={page === '...'}>
+          <PaginationLink
+            href=''
+            onClick={(e) => {
+              e.preventDefault();
+              e.target.blur();
 
-            if (onClick.page) {
-              return onClick.page(e, page);
-            }
+              if (onClick.page) {
+                return onClick.page(e, page);
+              }
 
-            history.push({ search: qs.stringify({ ...search, page }) });
-          }}
-        >
-          {page}
-        </PaginationLink>
-      </PaginationItem>
-    ));
+              history.push({ search: qs.stringify({ ...search, [pageKey]: page }) });
+            }}
+          >
+            {page}
+          </PaginationLink>
+        </PaginationItem>
+      ),
+    );
 
   return (
     <nav>
@@ -84,7 +86,7 @@ const Paginator = ({ search, total, current, history, onClick = {} }) => {
               history.push({
                 search: qs.stringify({
                   ...search,
-                  page: Math.max(current - 1, 1),
+                  [pageKey]: Math.max(current - 1, 1),
                 }),
               });
             }}
@@ -109,7 +111,7 @@ const Paginator = ({ search, total, current, history, onClick = {} }) => {
               history.push({
                 search: qs.stringify({
                   ...search,
-                  page: Math.min(current + 1, total),
+                  [pageKey]: Math.min(current + 1, total),
                 }),
               });
             }}
