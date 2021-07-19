@@ -1,19 +1,21 @@
-//
 import React from 'react';
-import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
-import qs from 'qs';
-import { withRouter } from 'react-router-dom';
-import { Desktop, Mobile } from './ByScreen';
 
-export const splitPagesToLimit = (total, current, limit = 5) => {
-  let pages = [1];
+import qs from 'qs';
+import { useHistory } from 'react-router';
+import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+
+import { Desktop, Mobile } from './ByScreen';
+import { useSearch } from '../../hooks/router';
+
+export const splitPagesToLimit = (total: number, current: number, limit: number = 5) => {
+  let pages: Array<string | number> = [1];
   if (total <= 1) {
     return pages;
   }
 
   if (total <= limit + 1) {
     pages = Array(total)
-      .fill()
+      .fill(undefined)
       .map((val, page) => page + 1);
   } else {
     // total > limit. need to truncate
@@ -21,19 +23,19 @@ export const splitPagesToLimit = (total, current, limit = 5) => {
     if (current + offset - 1 <= limit) {
       // truncate tail
       const head = Array(limit)
-        .fill()
+        .fill(undefined)
         .map((val, page) => page + 1);
       pages = [...head, '...', total];
     } else if (current + offset + 1 >= total) {
       // truncate head
       const tail = Array(limit)
-        .fill()
+        .fill(undefined)
         .map((val, page) => total - (limit - (page + 1)));
       pages = [1, '...', ...tail];
     } else {
       // truncate both head and tail
       const centers = Array(limit)
-        .fill()
+        .fill(undefined)
         .map((val, page) => current - (offset - page));
       pages = [1, '...', ...centers, '...', total];
     }
@@ -42,32 +44,47 @@ export const splitPagesToLimit = (total, current, limit = 5) => {
   return pages;
 };
 
-const Paginator = ({ search, total, current, history, onClick = {}, pageKey = 'page' }) => {
-  const renderPages = (thePage) =>
-    splitPagesToLimit(Number(total), Number(current), thePage).map(
-      (
-        page,
-        idx, // eslint-disable-next-line react/no-array-index-key
-      ) => (
-        <PaginationItem key={idx} active={Number(current) === page} disabled={page === '...'}>
-          <PaginationLink
-            href=''
-            onClick={(e) => {
-              e.preventDefault();
-              e.target.blur();
+interface OnClick {
+  page?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, page: number) => void;
+  next?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+  previous?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+}
 
-              if (onClick.page) {
-                return onClick.page(e, page);
-              }
+interface PaginatorProps {
+  total: number;
+  current: number;
+  onClick?: OnClick;
+  pageKey?: string;
+}
 
-              history.push({ search: qs.stringify({ ...search, [pageKey]: page }) });
-            }}
-          >
-            {page}
-          </PaginationLink>
-        </PaginationItem>
-      ),
-    );
+const Paginator = ({ total, current, onClick = {}, pageKey = 'page' }: PaginatorProps) => {
+  const search = useSearch();
+  const history = useHistory();
+
+  const renderPages = (length: number) => {
+    const pages = splitPagesToLimit(Number(total), Number(current), length);
+
+    return pages.map((page, idx) => (
+      <PaginationItem key={idx} active={Number(current) === page} disabled={page === '...'}>
+        <PaginationLink
+          href=''
+          onClick={(e) => {
+            e.preventDefault();
+            //@ts-ignore
+            e.target.blur();
+
+            if (onClick.page) {
+              return onClick.page(e, page as number);
+            }
+
+            history.push({ search: qs.stringify({ ...search, [pageKey]: page }) });
+          }}
+        >
+          {page}
+        </PaginationLink>
+      </PaginationItem>
+    ));
+  };
 
   return (
     <nav>
@@ -125,4 +142,4 @@ const Paginator = ({ search, total, current, history, onClick = {}, pageKey = 'p
   );
 };
 
-export default withRouter(Paginator);
+export default Paginator;
